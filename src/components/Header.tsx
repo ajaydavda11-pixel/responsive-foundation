@@ -20,6 +20,9 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("#home");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const onBlog = location.pathname === "/blog";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
