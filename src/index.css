@@ -656,3 +656,56 @@ html.theme-transition *::after {
   transition-duration: 0.4s !important;
   transition-timing-function: ease !important;
 }
+
+/* ===== Apple-level polish additions ===== */
+
+@layer utilities {
+  /* Animated brand gradient text */
+  .text-gradient-brand {
+    background: linear-gradient(120deg,
+      hsl(var(--emerald)) 0%,
+      hsl(var(--emerald-light)) 35%,
+      hsl(var(--accent)) 70%,
+      hsl(var(--gold-light)) 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-pan 8s ease-in-out infinite;
+  }
+
+  /* Soft gradient divider — replace flat <hr> visuals */
+  .divider-gradient {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      hsl(var(--accent) / 0.5) 50%,
+      transparent 100%);
+    border: 0;
+  }
+
+  /* Fluid section padding helper (opt-in) */
+  .px-fluid {
+    padding-left: clamp(1rem, 5vw, 6rem);
+    padding-right: clamp(1rem, 5vw, 6rem);
+  }
+}
+
+@keyframes gradient-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* Accessibility — honor reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
