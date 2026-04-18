@@ -28,7 +28,7 @@ const HeroSection = () => (
           <p className="text-xs sm:text-sm font-medium tracking-[0.2em] uppercase text-accent mb-4 sm:mb-6">
             Empowering Beautycare
           </p>
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.08] text-foreground text-balance text-shadow-hero">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.08] text-balance text-shadow-hero text-gradient-brand">
             Advanced Cosmetic Formulation Consulting
           </h1>
           <p className="mt-3 sm:mt-4 font-display text-lg sm:text-xl md:text-2xl text-muted-foreground font-light italic">
