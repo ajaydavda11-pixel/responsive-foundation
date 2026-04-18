@@ -96,7 +96,7 @@ const Header = () => {
         } : undefined}
       >
         <div className="max-w-[1360px] mx-auto w-full flex items-center justify-between h-16 sm:h-20 px-4 sm:px-6 md:px-10 lg:px-16">
-          <a href="#home" onClick={() => handleNavClick("#home")} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-4 lg:mr-20">
+          <a href="#home" onClick={(e) => handleNavClick(e, { href: "#home" })} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-4 lg:mr-20">
             CosmetIQ<span className="text-accent">_</span>lab
           </a>
 
