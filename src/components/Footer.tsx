@@ -1,4 +1,4 @@
-import { Mail, Instagram } from "lucide-react";
+import { Mail, Instagram, Globe } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const socials = [
@@ -26,6 +26,13 @@ const socials = [
     external: true,
     icon: <Instagram className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
     ariaLabel: "Instagram",
+  },
+  {
+    label: "Visit Website",
+    href: "https://epivorstudio.com",
+    external: true,
+    icon: <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
+    ariaLabel: "Website",
   },
 ];
 
