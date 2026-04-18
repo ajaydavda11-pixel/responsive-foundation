@@ -50,7 +50,7 @@ const ContactSection = () => {
             {[
               { icon: Phone, label: "Phone", value: "+91 8980176442" },
               { icon: Mail, label: "Email", value: "cosmetiq.labs@gmail.com" },
-              { icon: MapPin, label: "Location", value: "Nashik, MH India" },
+              { icon: MapPin, label: "Location", value: "Nashik, Maharastra, India." },
             ].map(({ icon: Icon, label, value }) => (
               <div key={label} className="glass-card p-4 sm:p-6 flex items-center gap-3 sm:gap-4">
                 <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-muted flex items-center justify-center flex-shrink-0 icon-bubble">
