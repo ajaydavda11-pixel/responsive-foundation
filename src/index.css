@@ -642,6 +642,16 @@ html {
   -webkit-overflow-scrolling: touch;
 }
 
+section[id] {
+  scroll-margin-top: 80px;
+}
+
+@media (max-width: 640px) {
+  section[id] {
+    scroll-margin-top: 64px;
+  }
+}
+
 *,
 *::before,
 *::after {
