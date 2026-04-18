@@ -218,7 +218,7 @@ const Header = () => {
                     <motion.a
                       key={link.href}
                       href={link.href}
-                      onClick={() => handleNavClick(link.href)}
+                      onClick={(e) => handleNavClick(e, link)}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
