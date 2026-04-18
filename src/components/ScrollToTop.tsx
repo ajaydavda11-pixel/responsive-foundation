@@ -20,7 +20,7 @@ const ScrollToTop = () => {
           exit={{ opacity: 0, scale: 0.8, y: 10 }}
           transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center social-icon"
+          className="fixed bottom-6 right-6 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full inline-flex items-center justify-center leading-none social-icon"
           style={{
             background: "hsl(var(--card) / 0.65)",
             backdropFilter: "blur(20px)",
