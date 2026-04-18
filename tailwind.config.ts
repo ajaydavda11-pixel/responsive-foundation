@@ -105,6 +105,11 @@ export default {
           "0%": { opacity: "0", transform: "scale(0.95)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        "whatsapp-pulse": {
+          "0%": { transform: "scale(1)", opacity: "0.55" },
+          "70%": { transform: "scale(1.6)", opacity: "0" },
+          "100%": { transform: "scale(1.6)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -113,6 +118,7 @@ export default {
         "fade-in": "fade-in 0.6s ease-out forwards",
         "float": "float 6s ease-in-out infinite",
         "scale-in": "scale-in 0.5s ease-out forwards",
+        "whatsapp-pulse": "whatsapp-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
   },
