@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { FlaskConical, Shield, Target, Award, Globe } from "lucide-react";
+import { FlaskConical, Shield, Target, Award, Globe, Factory, Package, Calendar } from "lucide-react";
 
 const strengths = [
   { icon: FlaskConical, title: "Advanced R&D Expertise", desc: "Deep scientific knowledge across cosmetic chemistry." },
@@ -11,9 +11,9 @@ const strengths = [
 ];
 
 const stats = [
-  { value: "500+", label: "Projects Completed" },
-  { value: "1,200+", label: "Formulations Developed" },
-  { value: "98%", label: "Client Satisfaction" },
+  { icon: Factory, value: "900+", label: "Production" },
+  { icon: Package, value: "100+", label: "Formulations Developed" },
+  { icon: Calendar, value: "5+", label: "Industry Experience" },
 ];
 
 const WhyChooseSection = () => {
