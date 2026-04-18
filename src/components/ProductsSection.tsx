@@ -2,11 +2,11 @@ import { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
 const tabs = [
-  { label: "Skin Care", items: ["Moisturizing Creams", "Anti-Aging Serums", "Brightening Gels", "Night Repair Treatments", "Eye Contour Creams", "Exfoliating Peels", "Hydrating Mists"] },
-  { label: "Active Serums", items: ["Vitamin C Serum", "Retinol Serum", "Hyaluronic Acid Serum", "Niacinamide Serum", "Peptide Complex", "AHA/BHA Serum", "Antioxidant Blend"] },
-  { label: "BB & CC Creams", items: ["BB Cream SPF 30", "CC Color Correcting", "Tinted Moisturizer", "Light Coverage Foundation", "Multi-Benefit Base"] },
-  { label: "Sun Care", items: ["SPF 50 Sunscreen", "Mineral Sunscreen", "After-Sun Gel", "Tinted Sun Protection", "Water-Resistant SPF", "Kids Sunscreen"] },
-  { label: "Hair Care", items: ["Anti-Dandruff Shampoo", "Keratin Conditioner", "Hair Repair Mask", "Scalp Treatment Oil", "Leave-In Conditioner", "Growth Serum"] },
+  { label: "Skin Care", items: ["Moisturizer", "Serums", "Brightening Gels", "Night Repair Treatments", "Eye Contour Creams", "Exfoliator", "Hydrating Mists", "Lotions", "Facial Care", "Cleanser & Face Wash"] },
+  { label: "Active Serums", items: ["Vitamin C Serum", "Retinol Serum", "Hyaluronic Acid Serum", "Niacinamide Serum", "Peptide Complex", "AHA/BHA Serum", "Antioxidant Blend", "Anti Aging Serums", "Exfoliating Serums", "Hydrating Serums", "Skin Brightening Serums", "Anti Acne / Acne Control Serums", "Barrier Repair", "Peeling Solutions"] },
+  { label: "BB & CC Creams", items: ["BB Cream with SPF", "CC Cream", "Tinted Moisturizer", "Light Coverage Foundation", "Multi-Benefit Base", "Make-up Primers", "Skin Gloss", "Korean Glass Skin"] },
+  { label: "Sun Care", items: ["Various SPF Range", "Mineral Sunscreen", "After-Sun Gel", "Tinted Sun Protection", "Water-Resistant SPF", "Kids Sunscreen", "Hair Sunscreen"] },
+  { label: "Hair Care", items: ["Anti-Dandruff Shampoo", "Keratin Conditioner", "Hair Repair Mask", "Scalp Treatment Oil", "Leave-In Conditioner", "Growth Serum", "Hair Growth Treatment", "Leave-on Cream", "Hair Serum", "Shampoo", "Conditioner"] },
   { label: "Perfume Types", items: ["Alcohol-Based Perfume", "Oil-Based Perfume", "Solid Perfume", "Body Mist", "Hair Perfume", "Attar / Ittar"] },
 ];
 

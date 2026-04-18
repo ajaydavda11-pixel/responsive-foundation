@@ -43,14 +43,13 @@ const ServicesSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="group glass-card p-6 sm:p-8 cursor-pointer"
+              className="group glass-card p-6 sm:p-8 cursor-pointer h-full flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/40"
             >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-muted flex items-center justify-center mb-4 sm:mb-5 icon-bubble group-hover:bg-primary transition-colors duration-400">
-                <Icon size={20} className="text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-muted flex items-center justify-center mb-4 sm:mb-5 icon-bubble group-hover:bg-primary transition-colors duration-400">
+                <Icon size={22} className="text-primary group-hover:text-primary-foreground transition-colors duration-300" />
               </div>
               <h3 className="font-display text-lg sm:text-xl font-semibold text-foreground mb-2 sm:mb-3">{title}</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-3 sm:mb-4">{desc}</p>
-              <span className="link-premium text-xs sm:text-sm font-medium text-primary">Learn More →</span>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{desc}</p>
             </motion.div>
           ))}
         </div>
