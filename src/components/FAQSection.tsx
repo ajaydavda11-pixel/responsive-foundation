@@ -3,7 +3,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 const faqs = [
-  { q: "How long does formulation development take?", a: "Typical formulation projects range from 4–12 weeks depending on complexity, number of iterations, and regulatory requirements. We provide detailed timelines at project initiation." },
+  { q: "How long does formulation development take?", a: "Typical formulation projects range from 3 weeks depending on complexity, number of iterations, and regulatory requirements. We provide detailed timelines at project initiation." },
   { q: "Do you support regulatory compliance?", a: "Yes. We offer comprehensive regulatory guidance across major markets including EU, US (FDA), and ASEAN — covering ingredient restrictions, labeling, safety assessments, and documentation." },
   { q: "Can you help startups with limited budgets?", a: "Absolutely. We offer flexible engagement models tailored for startups, including phased development, minimum viable formulations, and cost-optimized ingredient selection." },
   { q: "Do you provide pilot batches?", a: "Yes. We support pilot batch manufacturing to validate formulations before full-scale production, ensuring quality and consistency." },
