@@ -43,37 +43,44 @@ const Footer = () => (
   >
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
 
-    <div className="section-container px-5 sm:px-6 md:px-8 h-auto sm:h-20 flex flex-col sm:flex-row items-center justify-between py-4 sm:py-0 gap-3 sm:gap-0 relative z-10">
-      <p className="text-[10px] sm:text-xs opacity-40 order-2 sm:order-1">
+    <div className="section-container px-5 sm:px-6 md:px-8 py-5 sm:py-0 sm:h-24 grid grid-cols-1 sm:grid-cols-3 items-center gap-4 sm:gap-0 relative z-10">
+      {/* Left: Copyright */}
+      <p className="text-sm sm:text-[15px] font-medium opacity-70 text-center sm:text-left order-3 sm:order-1">
         © {new Date().getFullYear()} CosmetIQ_lab. All rights reserved.
       </p>
 
-      <div className="flex flex-col items-center sm:items-end gap-1.5 order-1 sm:order-2 animate-fade-in">
-        <p className="text-[10px] sm:text-xs opacity-60">Design & Manage By</p>
-        <span className="text-xs sm:text-sm font-semibold text-accent">EPIVOR Studio</span>
-        <TooltipProvider delayDuration={150}>
-          <div className="flex items-center gap-4 sm:gap-5 mt-1">
-            {socials.map((s) => (
-              <Tooltip key={s.ariaLabel}>
-                <TooltipTrigger asChild>
-                  <a
-                    href={s.href}
-                    aria-label={s.ariaLabel}
-                    {...(s.external
-                      ? { target: "_blank", rel: "noopener noreferrer" }
-                      : {})}
-                    className="inline-flex items-center justify-center text-current opacity-70 transition-all duration-300 ease-out hover:opacity-100 hover:scale-110 hover:text-accent hover:drop-shadow-[0_0_8px_hsl(var(--accent)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 rounded"
-                  >
-                    {s.icon}
-                  </a>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="text-xs">
-                  {s.label}
-                </TooltipContent>
-              </Tooltip>
-            ))}
-          </div>
-        </TooltipProvider>
+      {/* Center: reserved for floating Back-to-Top button */}
+      <div className="hidden sm:block order-2" aria-hidden="true" />
+
+      {/* Right: Design & Manage By */}
+      <div className="flex flex-col items-center sm:items-end gap-2 order-1 sm:order-3 animate-fade-in">
+        <p className="text-[11px] sm:text-xs opacity-60 tracking-wide">Design & Manage By</p>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <span className="text-sm sm:text-[15px] font-semibold text-accent leading-none">EPIVOR Studio</span>
+          <TooltipProvider delayDuration={150}>
+            <div className="flex items-center gap-3 sm:gap-4 leading-none">
+              {socials.map((s) => (
+                <Tooltip key={s.ariaLabel}>
+                  <TooltipTrigger asChild>
+                    <a
+                      href={s.href}
+                      aria-label={s.ariaLabel}
+                      {...(s.external
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
+                      className="inline-flex items-center justify-center text-current opacity-70 transition-all duration-300 ease-out hover:opacity-100 hover:scale-110 hover:text-accent hover:drop-shadow-[0_0_8px_hsl(var(--accent)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 rounded"
+                    >
+                      {s.icon}
+                    </a>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="text-xs">
+                    {s.label}
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          </TooltipProvider>
+        </div>
       </div>
     </div>
   </footer>
