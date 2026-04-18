@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
@@ -9,7 +10,7 @@ const navLinks = [
   { label: "Services", href: "#services" },
   { label: "Products", href: "#products" },
   { label: "Process", href: "#process" },
-  { label: "Blog", href: "#blog" },
+  { label: "Blog", href: "/blog", route: true },
   { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
