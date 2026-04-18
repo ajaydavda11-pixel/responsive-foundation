@@ -13,7 +13,7 @@ const strengths = [
 const stats = [
   { icon: Factory, value: "900+", label: "Production" },
   { icon: Package, value: "100+", label: "Formulations Developed" },
-  { icon: Calendar, value: "5+", label: "Industry Experience" },
+  { icon: Calendar, value: "5+ Years", label: "Industry Experience" },
 ];
 
 const WhyChooseSection = () => {
