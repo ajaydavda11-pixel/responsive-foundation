@@ -164,7 +164,7 @@ const Header = () => {
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-2 text-foreground btn-press"
+              className="md:hidden p-2 text-foreground btn-press"
               aria-label="Open menu"
             >
               <Menu size={22} />
