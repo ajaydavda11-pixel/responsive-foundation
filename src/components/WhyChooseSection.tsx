@@ -62,11 +62,14 @@ const WhyChooseSection = () => {
           transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="glass-card-elevated p-8 sm:p-10 md:p-14"
         >
-          <div className="grid grid-cols-3 gap-4 sm:gap-8 text-center">
-            {stats.map(({ value, label }) => (
-              <div key={label}>
-                <p className="font-display text-2xl sm:text-4xl md:text-5xl font-semibold text-primary">{value}</p>
-                <p className="text-[10px] sm:text-sm text-muted-foreground mt-1 sm:mt-2">{label}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 text-center">
+            {stats.map(({ icon: Icon, value, label }) => (
+              <div key={label} className="flex flex-col items-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-muted flex items-center justify-center mb-3 sm:mb-4 icon-bubble">
+                  <Icon size={22} className="text-primary" />
+                </div>
+                <p className="font-display text-3xl sm:text-4xl md:text-5xl font-semibold text-primary">{value}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">{label}</p>
               </div>
             ))}
           </div>
