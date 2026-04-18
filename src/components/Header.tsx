@@ -31,7 +31,13 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
+    if (onBlog) {
+      setActiveSection("/blog");
+      return;
+    }
+    const sectionIds = navLinks
+      .filter((l) => !l.route)
+      .map((l) => l.href.replace("#", ""));
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((id) => {
@@ -53,7 +59,7 @@ const Header = () => {
     });
 
     return () => observers.forEach((o) => o.disconnect());
-  }, []);
+  }, [onBlog]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
