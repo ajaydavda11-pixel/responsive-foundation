@@ -112,7 +112,7 @@ const Header = () => {
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={() => handleNavClick(link.href)}
+                  onClick={(e) => handleNavClick(e, link)}
                   className="relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press"
                   onMouseEnter={() => setHoveredNav(link.href)}
                   style={{
