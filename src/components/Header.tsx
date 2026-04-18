@@ -66,10 +66,20 @@ const Header = () => {
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
-  const handleNavClick = useCallback((href: string) => {
-    setActiveSection(href);
+  const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string; route?: boolean }) => {
     setMobileOpen(false);
-  }, []);
+    if (link.route) {
+      e.preventDefault();
+      setActiveSection(link.href);
+      navigate(link.href);
+      return;
+    }
+    setActiveSection(link.href);
+    if (onBlog) {
+      e.preventDefault();
+      navigate("/" + link.href);
+    }
+  }, [navigate, onBlog]);
 
   return (
     <>
