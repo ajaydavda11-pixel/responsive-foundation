@@ -48,34 +48,32 @@ const Footer = () => (
         © {new Date().getFullYear()} CosmetIQ_lab. All rights reserved.
       </p>
 
-      <div className="flex flex-col items-center sm:items-end gap-1 order-1 sm:order-2 animate-fade-in">
+      <div className="flex flex-col items-center sm:items-end gap-1.5 order-1 sm:order-2 animate-fade-in">
         <p className="text-[10px] sm:text-xs opacity-60">Design & Manage By</p>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span className="text-xs sm:text-sm font-semibold text-accent">EPIVOR Studio</span>
-          <TooltipProvider delayDuration={150}>
-            <div className="flex items-center gap-2 sm:gap-2.5">
-              {socials.map((s) => (
-                <Tooltip key={s.ariaLabel}>
-                  <TooltipTrigger asChild>
-                    <a
-                      href={s.href}
-                      aria-label={s.ariaLabel}
-                      {...(s.external
-                        ? { target: "_blank", rel: "noopener noreferrer" }
-                        : {})}
-                      className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-current/10 bg-background/5 text-current opacity-70 transition-all duration-300 ease-out hover:opacity-100 hover:scale-110 hover:text-accent hover:bg-accent/10 hover:shadow-[0_0_12px_hsl(var(--accent)/0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
-                    >
-                      {s.icon}
-                    </a>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="text-xs">
-                    {s.label}
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
-          </TooltipProvider>
-        </div>
+        <span className="text-xs sm:text-sm font-semibold text-accent">EPIVOR Studio</span>
+        <TooltipProvider delayDuration={150}>
+          <div className="flex items-center gap-4 sm:gap-5 mt-1">
+            {socials.map((s) => (
+              <Tooltip key={s.ariaLabel}>
+                <TooltipTrigger asChild>
+                  <a
+                    href={s.href}
+                    aria-label={s.ariaLabel}
+                    {...(s.external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                    className="inline-flex items-center justify-center text-current opacity-70 transition-all duration-300 ease-out hover:opacity-100 hover:scale-110 hover:text-accent hover:drop-shadow-[0_0_8px_hsl(var(--accent)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 rounded"
+                  >
+                    {s.icon}
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="text-xs">
+                  {s.label}
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
+        </TooltipProvider>
       </div>
     </div>
   </footer>
