@@ -220,10 +220,10 @@ const Header = () => {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-                      className={`text-base font-medium px-4 py-3 rounded-xl transition-all duration-300 btn-press ${
+                      className={`text-base font-medium px-4 py-3 rounded-xl transition-all duration-200 btn-press ${
                         isActive
-                          ? 'text-foreground nav-active-mobile'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] active:bg-foreground/[0.08]'
+                          ? 'text-primary-foreground nav-active-mobile'
+                          : 'text-muted-foreground hover:text-emerald hover:bg-emerald/15'
                       }`}
                     >
                       {link.label}
