@@ -116,11 +116,12 @@ const Header = () => {
                   className="relative px-2.5 md:px-3 lg:px-4 py-2 text-[13px] md:text-[13px] lg:text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press whitespace-nowrap"
                   onMouseEnter={() => setHoveredNav(link.href)}
                   style={{
-                    color: isActive && !isHovered
-                      ? 'hsl(var(--foreground))'
+                    color: isActive
+                      ? 'hsl(var(--primary-foreground))'
                       : isHovered
-                        ? undefined
+                        ? 'hsl(var(--emerald))'
                         : 'hsl(var(--muted-foreground))',
+                    transition: 'color 200ms ease',
                   }}
                 >
                   <AnimatePresence>
@@ -129,8 +130,7 @@ const Header = () => {
                         layoutId="nav-hover-pill"
                         className="absolute inset-0 rounded-full z-[-1]"
                         style={{
-                          background: 'linear-gradient(135deg, hsl(var(--emerald)), hsl(var(--emerald-light)))',
-                          boxShadow: '0 4px 16px hsl(155 40% 22% / 0.25)',
+                          background: 'hsl(var(--emerald) / 0.15)',
                         }}
                         initial={{ opacity: 0, scale: 0.92 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -150,9 +150,7 @@ const Header = () => {
                     />
                   )}
 
-                  <span className={`relative z-10 transition-colors duration-300 ${
-                    isHovered && !isActive ? 'text-primary-foreground' : ''
-                  }`}>
+                  <span className="relative z-10">
                     {link.label}
                   </span>
                 </a>
