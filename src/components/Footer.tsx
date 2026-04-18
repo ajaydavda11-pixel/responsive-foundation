@@ -43,17 +43,9 @@ const Footer = () => (
   >
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
 
-    <div className="section-container px-5 sm:px-6 md:px-8 py-5 sm:py-0 sm:h-24 grid grid-cols-1 sm:grid-cols-3 items-center gap-4 sm:gap-0 relative z-10">
-      {/* Left: Copyright */}
-      <p className="text-sm sm:text-[15px] font-medium opacity-70 text-center sm:text-left order-3 sm:order-1">
-        © {new Date().getFullYear()} CosmetIQ_lab. All rights reserved.
-      </p>
-
-      {/* Center: reserved for floating Back-to-Top button */}
-      <div className="hidden sm:block order-2" aria-hidden="true" />
-
-      {/* Right: Design & Manage By */}
-      <div className="flex flex-col items-center sm:items-end gap-2 order-1 sm:order-3 animate-fade-in">
+    <div className="section-container px-5 sm:px-6 md:px-8 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6 relative z-10">
+      {/* Right on desktop / Top on mobile: Design & Manage By */}
+      <div className="flex flex-col items-center md:items-end gap-2 order-1 md:order-2 animate-fade-in">
         <p className="text-[11px] sm:text-xs opacity-60 tracking-wide">Design & Manage By</p>
         <div className="flex items-center gap-3 sm:gap-4">
           <span className="text-sm sm:text-[15px] font-semibold text-accent leading-none">EPIVOR Studio</span>
@@ -68,7 +60,7 @@ const Footer = () => (
                       {...(s.external
                         ? { target: "_blank", rel: "noopener noreferrer" }
                         : {})}
-                      className="inline-flex items-center justify-center text-current opacity-70 transition-all duration-300 ease-out hover:opacity-100 hover:scale-110 hover:text-accent hover:drop-shadow-[0_0_8px_hsl(var(--accent)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 rounded"
+                      className="inline-flex items-center justify-center text-current opacity-70 transition-all duration-200 ease-out hover:opacity-100 hover:scale-110 hover:text-accent hover:drop-shadow-[0_0_8px_hsl(var(--accent)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 rounded"
                     >
                       {s.icon}
                     </a>
@@ -82,6 +74,11 @@ const Footer = () => (
           </TooltipProvider>
         </div>
       </div>
+
+      {/* Left on desktop / Bottom on mobile: Copyright */}
+      <p className="text-sm sm:text-[15px] font-medium opacity-70 text-center md:text-left order-2 md:order-1">
+        © {new Date().getFullYear()} CosmetIQ_lab. All rights reserved.
+      </p>
     </div>
   </footer>
 );
