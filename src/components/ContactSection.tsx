@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Instagram } from "lucide-react";
 
 const projectTypes = [
   "Skin Care Formulation", "Hair Care Development", "Perfume Creation",
@@ -50,15 +50,27 @@ const ContactSection = () => {
             {[
               { icon: Phone, label: "Phone", value: "+91 8980176442" },
               { icon: Mail, label: "Email", value: "cosmetiq.labs@gmail.com" },
+              { icon: Instagram, label: "Instagram", value: "cosmetiq.labs", href: "https://www.instagram.com/cosmetiq.labs?igsh=ZjhlY3ozcXF5MTE0&utm_source=ig_contact_invite" },
               { icon: MapPin, label: "Location", value: "Nashik, Maharastra, India." },
-            ].map(({ icon: Icon, label, value }) => (
+            ].map(({ icon: Icon, label, value, href }) => (
               <div key={label} className="glass-card p-4 sm:p-6 flex items-center gap-3 sm:gap-4">
                 <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-muted flex items-center justify-center flex-shrink-0 icon-bubble">
                   <Icon size={16} className="text-primary sm:w-[18px] sm:h-[18px]" />
                 </div>
                 <div>
                   <p className="text-[11px] sm:text-xs text-muted-foreground">{label}</p>
-                  <p className="text-xs sm:text-sm font-medium text-foreground">{value}</p>
+                  {href ? (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs sm:text-sm font-medium text-foreground hover:text-primary transition-colors no-underline"
+                    >
+                      {value}
+                    </a>
+                  ) : (
+                    <p className="text-xs sm:text-sm font-medium text-foreground">{value}</p>
+                  )}
                 </div>
               </div>
             ))}
