@@ -30,7 +30,7 @@ const AboutSection = () => {
           <p className="text-xs sm:text-sm font-medium tracking-[0.2em] uppercase text-accent mb-3 sm:mb-4">Who We Are</p>
           <h2 className="section-title">Precision. Safety. Innovation.</h2>
           <p className="section-subtitle">
-            CosmetIQ_lab specializes in developing advanced cosmetic formulations with precision, safety, and innovation — from concept development and ingredient selection to stability guidance, claim support, and technical documentation.
+            CosmetIQ_lab specializes in developing advanced cosmetic formulations with precision, safety, and innovation  from concept development and ingredient selection to stability guidance, claim support, and technical documentation.
           </p>
         </motion.div>
 
