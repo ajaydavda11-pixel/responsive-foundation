@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
@@ -9,7 +10,7 @@ const navLinks = [
   { label: "Services", href: "#services" },
   { label: "Products", href: "#products" },
   { label: "Process", href: "#process" },
-  { label: "Blog", href: "#blog" },
+  { label: "Blog", href: "/blog", route: true },
   { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
@@ -19,6 +20,9 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("#home");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const onBlog = location.pathname === "/blog";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -27,7 +31,13 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
+    if (onBlog) {
+      setActiveSection("/blog");
+      return;
+    }
+    const sectionIds = navLinks
+      .filter((l) => !l.route)
+      .map((l) => l.href.replace("#", ""));
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((id) => {
@@ -49,17 +59,27 @@ const Header = () => {
     });
 
     return () => observers.forEach((o) => o.disconnect());
-  }, []);
+  }, [onBlog]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
-  const handleNavClick = useCallback((href: string) => {
-    setActiveSection(href);
+  const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string; route?: boolean }) => {
     setMobileOpen(false);
-  }, []);
+    if (link.route) {
+      e.preventDefault();
+      setActiveSection(link.href);
+      navigate(link.href);
+      return;
+    }
+    setActiveSection(link.href);
+    if (onBlog) {
+      e.preventDefault();
+      navigate("/" + link.href);
+    }
+  }, [navigate, onBlog]);
 
   return (
     <>
@@ -76,7 +96,7 @@ const Header = () => {
         } : undefined}
       >
         <div className="max-w-[1360px] mx-auto w-full flex items-center justify-between h-16 sm:h-20 px-4 sm:px-6 md:px-10 lg:px-16">
-          <a href="#home" onClick={() => handleNavClick("#home")} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-4 lg:mr-20">
+          <a href="#home" onClick={(e) => handleNavClick(e, { href: "#home" })} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-4 lg:mr-20">
             CosmetIQ<span className="text-accent">_</span>lab
           </a>
 
@@ -92,7 +112,7 @@ const Header = () => {
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={() => handleNavClick(link.href)}
+                  onClick={(e) => handleNavClick(e, link)}
                   className="relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press"
                   onMouseEnter={() => setHoveredNav(link.href)}
                   style={{
@@ -198,7 +218,7 @@ const Header = () => {
                     <motion.a
                       key={link.href}
                       href={link.href}
-                      onClick={() => handleNavClick(link.href)}
+                      onClick={(e) => handleNavClick(e, link)}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
