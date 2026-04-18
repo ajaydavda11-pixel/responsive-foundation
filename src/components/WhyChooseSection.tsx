@@ -11,9 +11,9 @@ const strengths = [
 ];
 
 const stats = [
-  { icon: Factory, value: "900+", label: "Production" },
+  { icon: Factory, value: "1000+", label: "Commercial Batches" },
   { icon: Package, value: "100+", label: "Formulations Developed" },
-  { icon: Calendar, value: "5+ Years", label: "Industry Experience" },
+  { icon: Calendar, value: "5+ Years", label: "Industrial Experience" },
 ];
 
 const WhyChooseSection = () => {

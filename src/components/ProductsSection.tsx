@@ -6,7 +6,7 @@ const tabs = [
   { label: "Active Serums", items: ["Vitamin C Serum", "Retinol Serum", "Hyaluronic Acid Serum", "Niacinamide Serum", "Peptide Complex", "AHA/BHA Serum", "Antioxidant Blend", "Anti Aging Serums", "Exfoliating Serums", "Hydrating Serums", "Skin Brightening Serums", "Anti Acne / Acne Control Serums", "Barrier Repair", "Peeling Solutions"] },
   { label: "BB & CC Creams", items: ["BB Cream with SPF", "CC Cream", "Tinted Moisturizer", "Light Coverage Foundation", "Multi-Benefit Base", "Make-up Primers", "Skin Gloss", "Korean Glass Skin"] },
   { label: "Sun Care", items: ["Various SPF Range", "Mineral Sunscreen", "After-Sun Gel", "Tinted Sun Protection", "Water-Resistant SPF", "Kids Sunscreen", "Hair Sunscreen"] },
-  { label: "Hair Care", items: ["Anti-Dandruff Shampoo", "Keratin Conditioner", "Hair Repair Mask", "Scalp Treatment Oil", "Leave-In Conditioner", "Growth Serum", "Hair Growth Treatment", "Leave-on Cream", "Hair Serum", "Shampoo", "Conditioner"] },
+  { label: "Hair Care", items: ["Anti-Dandruff Shampoo", "Keratin Conditioner", "Hair Repair Mask", "Scalp Treatment Oil", "Leave-On Conditioner", "Growth Serum", "Hair Growth Treatment", "Leave-on Cream", "Hair Serum", "Shampoo", "Conditioner"] },
   { label: "Perfume Types", items: ["Alcohol-Based Perfume", "Oil-Based Perfume", "Solid Perfume", "Body Mist", "Hair Perfume", "Attar / Ittar"] },
 ];
 
