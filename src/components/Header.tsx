@@ -95,13 +95,13 @@ const Header = () => {
           boxShadow: 'inset 0 1px 0 hsl(var(--glass-highlight)), 0 4px 20px hsl(var(--neu-shadow-dark))',
         } : undefined}
       >
-        <div className="max-w-[1360px] mx-auto w-full flex items-center justify-between h-16 sm:h-20 px-4 sm:px-6 md:px-10 lg:px-16">
-          <a href="#home" onClick={(e) => handleNavClick(e, { href: "#home" })} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-4 md:mr-6 lg:mr-20">
+        <div className="max-w-[1360px] mx-auto w-full flex items-center justify-between h-16 sm:h-20 px-4 sm:px-6 md:px-4 lg:px-10 xl:px-16">
+          <a href="#home" onClick={(e) => handleNavClick(e, { href: "#home" })} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-2 md:mr-2 lg:mr-10 xl:mr-20">
             CosmetIQ<span className="text-accent">_</span>lab
           </a>
 
           <nav
-            className="hidden md:flex items-center gap-0.5 md:gap-1 lg:gap-1.5 ml-auto"
+            className="hidden md:flex items-center gap-0 md:gap-0 lg:gap-1.5 ml-auto"
             onMouseLeave={() => setHoveredNav(null)}
           >
             {navLinks.map((link) => {
@@ -113,7 +113,7 @@ const Header = () => {
                   key={link.href}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link)}
-                  className="relative px-2.5 md:px-3 lg:px-4 py-2 text-[13px] md:text-[13px] lg:text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press whitespace-nowrap"
+                  className="relative px-2 md:px-2 lg:px-4 py-2 text-[12px] md:text-[12px] lg:text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press whitespace-nowrap"
                   onMouseEnter={() => setHoveredNav(link.href)}
                   style={{
                     color: isActive
@@ -158,7 +158,7 @@ const Header = () => {
             })}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3 ml-4">
+          <div className="flex items-center gap-2 sm:gap-3 ml-2 md:ml-2 lg:ml-4">
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(true)}
