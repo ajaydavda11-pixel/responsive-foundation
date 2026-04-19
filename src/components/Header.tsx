@@ -105,7 +105,7 @@ const Header = () => {
                   key={link.href}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link)}
-                  className="relative px-2 md:px-2 lg:px-4 py-2 text-[12px] md:text-[12px] lg:text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press whitespace-nowrap"
+                  className="relative px-2 md:px-2 lg:px-4 py-2 text-[12px] md:text-[12px] lg:text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press whitespace-nowrap focus:outline-none focus-visible:outline-none focus:ring-0"
                   onMouseEnter={() => setHoveredNav(link.href)}
                   style={{
                     color: isActive
