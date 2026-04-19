@@ -38,27 +38,35 @@ const Header = () => {
     const sectionIds = navLinks
       .filter((l) => !l.route)
       .map((l) => l.href.replace("#", ""));
-    const observers: IntersectionObserver[] = [];
 
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
+    const computeActive = () => {
+      const headerH = window.innerWidth >= 640 ? 80 : 64;
+      const probe = headerH + 8;
+      let current = sectionIds[0];
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.top - probe <= 0) {
+          current = id;
+        } else {
+          break;
+        }
+      }
+      // Bottom-of-page guard — last section active when near bottom
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+        current = sectionIds[sectionIds.length - 1];
+      }
+      setActiveSection(`#${current}`);
+    };
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setActiveSection(`#${id}`);
-            }
-          });
-        },
-        { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
-      );
-      observer.observe(el);
-      observers.push(observer);
-    });
-
-    return () => observers.forEach((o) => o.disconnect());
+    computeActive();
+    window.addEventListener("scroll", computeActive, { passive: true });
+    window.addEventListener("resize", computeActive);
+    return () => {
+      window.removeEventListener("scroll", computeActive);
+      window.removeEventListener("resize", computeActive);
+    };
   }, [onBlog]);
 
   useEffect(() => {
