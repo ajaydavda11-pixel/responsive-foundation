@@ -10,7 +10,7 @@ const navLinks = [
   { label: "Services", href: "#services" },
   { label: "Products", href: "#products" },
   { label: "Process", href: "#process" },
-  { label: "Blog", href: "/blog", route: true },
+  { label: "Blog", href: "#blog" },
   { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
@@ -35,9 +35,7 @@ const Header = () => {
       setActiveSection("/blog");
       return;
     }
-    const sectionIds = navLinks
-      .filter((l) => !l.route)
-      .map((l) => l.href.replace("#", ""));
+    const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((id) => {
@@ -66,14 +64,8 @@ const Header = () => {
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
-  const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string; route?: boolean }) => {
+  const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string }) => {
     setMobileOpen(false);
-    if (link.route) {
-      e.preventDefault();
-      setActiveSection(link.href);
-      navigate(link.href);
-      return;
-    }
     setActiveSection(link.href);
     if (onBlog) {
       e.preventDefault();
