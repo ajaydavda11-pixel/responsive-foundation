@@ -158,7 +158,7 @@ const Header = () => {
             })}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3 ml-4">
+          <div className="flex items-center gap-2 sm:gap-3 ml-2 md:ml-2 lg:ml-4">
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(true)}
