@@ -95,13 +95,13 @@ const Header = () => {
           boxShadow: 'inset 0 1px 0 hsl(var(--glass-highlight)), 0 4px 20px hsl(var(--neu-shadow-dark))',
         } : undefined}
       >
-        <div className="max-w-[1360px] mx-auto w-full flex items-center justify-between h-16 sm:h-20 px-4 sm:px-6 md:px-10 lg:px-16">
-          <a href="#home" onClick={(e) => handleNavClick(e, { href: "#home" })} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-4 md:mr-6 lg:mr-20">
+        <div className="max-w-[1360px] mx-auto w-full flex items-center justify-between h-16 sm:h-20 px-4 sm:px-6 md:px-4 lg:px-10 xl:px-16">
+          <a href="#home" onClick={(e) => handleNavClick(e, { href: "#home" })} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-2 md:mr-2 lg:mr-10 xl:mr-20">
             CosmetIQ<span className="text-accent">_</span>lab
           </a>
 
           <nav
-            className="hidden md:flex items-center gap-0.5 md:gap-1 lg:gap-1.5 ml-auto"
+            className="hidden md:flex items-center gap-0 md:gap-0 lg:gap-1.5 ml-auto"
             onMouseLeave={() => setHoveredNav(null)}
           >
             {navLinks.map((link) => {
