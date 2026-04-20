@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,6 +15,9 @@ const navLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
+const HEADER_OFFSET = 80;
+const OBSERVER_THRESHOLDS = [0, 0.2, 0.35, 0.5, 0.65, 0.8, 1];
+
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -22,56 +25,156 @@ const Header = () => {
   const [activeSection, setActiveSection] = useState("#home");
   const location = useLocation();
   const navigate = useNavigate();
-  const onBlog = location.pathname === "/blog";
+  const isBlogRoute = location.pathname.startsWith("/blog");
+  const sectionLinks = useMemo(() => navLinks.map((link) => link.href), []);
+  const syncFrameRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+  const setSingleActive = useCallback((href: string) => {
+    setActiveSection((current) => (current === href ? current : href));
   }, []);
 
-  useEffect(() => {
-    if (onBlog) {
-      setActiveSection("/blog");
+  const updateHash = useCallback((href: string) => {
+    if (location.pathname !== "/" || location.hash === href) return;
+    window.history.replaceState(window.history.state, "", href);
+  }, [location.hash, location.pathname]);
+
+  const scrollToSection = useCallback((href: string, behavior: ScrollBehavior = "smooth") => {
+    const target = document.getElementById(href.replace("#", ""));
+    if (!target) return false;
+
+    const top = Math.max(target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET, 0);
+    window.scrollTo({ top, behavior });
+    return true;
+  }, []);
+
+  const syncActiveSection = useCallback(() => {
+    if (isBlogRoute) {
+      setSingleActive("#blog");
       return;
     }
-    const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
-    const observers: IntersectionObserver[] = [];
 
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
+    const sections = sectionLinks
+      .map((href) => {
+        const element = document.getElementById(href.replace("#", ""));
+        return element ? { href, element } : null;
+      })
+      .filter((section): section is { href: string; element: HTMLElement } => Boolean(section));
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setActiveSection(`#${id}`);
-            }
-          });
-        },
-        { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
-      );
-      observer.observe(el);
-      observers.push(observer);
+    if (!sections.length) return;
+
+    const viewportCenter = HEADER_OFFSET + (window.innerHeight - HEADER_OFFSET) / 2;
+    let closestHref = sections[0].href;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    sections.forEach(({ href, element }) => {
+      const rect = element.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const visible = rect.bottom > HEADER_OFFSET && rect.top < window.innerHeight;
+      const distance = Math.abs(center - viewportCenter) + (visible ? 0 : window.innerHeight);
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestHref = href;
+      }
     });
 
-    return () => observers.forEach((o) => o.disconnect());
-  }, [onBlog]);
+    setSingleActive(closestHref);
+    updateHash(closestHref);
+  }, [isBlogRoute, sectionLinks, setSingleActive, updateHash]);
+
+  const scheduleSync = useCallback(() => {
+    if (syncFrameRef.current !== null) {
+      cancelAnimationFrame(syncFrameRef.current);
+    }
+
+    syncFrameRef.current = requestAnimationFrame(() => {
+      syncFrameRef.current = null;
+      syncActiveSection();
+    });
+  }, [syncActiveSection]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50);
+      scheduleSync();
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", scheduleSync);
+    scheduleSync();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", scheduleSync);
+      if (syncFrameRef.current !== null) {
+        cancelAnimationFrame(syncFrameRef.current);
+      }
+    };
+  }, [scheduleSync]);
+
+  useEffect(() => {
+    if (isBlogRoute) {
+      setSingleActive("#blog");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      () => scheduleSync(),
+      {
+        rootMargin: `-${HEADER_OFFSET}px 0px -20% 0px`,
+        threshold: OBSERVER_THRESHOLDS,
+      },
+    );
+
+    sectionLinks.forEach((href) => {
+      const element = document.getElementById(href.replace("#", ""));
+      if (element) observer.observe(element);
+    });
+
+    scheduleSync();
+
+    return () => observer.disconnect();
+  }, [isBlogRoute, scheduleSync, sectionLinks, setSingleActive]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
-  const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string }) => {
-    setMobileOpen(false);
-    setActiveSection(link.href);
-    if (onBlog) {
-      e.preventDefault();
-      navigate("/" + link.href);
+  useEffect(() => {
+    if (isBlogRoute) {
+      setSingleActive("#blog");
+      return;
     }
-  }, [navigate, onBlog]);
+
+    const targetHref = sectionLinks.includes(location.hash) ? location.hash : "#home";
+    setSingleActive(targetHref);
+
+    requestAnimationFrame(() => {
+      if (targetHref === "#home" && !location.hash) {
+        window.scrollTo({ top: 0, behavior: "auto" });
+        return;
+      }
+
+      scrollToSection(targetHref, "auto");
+    });
+  }, [isBlogRoute, location.hash, location.pathname, scrollToSection, sectionLinks, setSingleActive]);
+
+  const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string }) => {
+    e.preventDefault();
+    setMobileOpen(false);
+    setSingleActive(link.href);
+
+    if (isBlogRoute) {
+      navigate(`/${link.href}`);
+      return;
+    }
+
+    updateHash(link.href);
+    scrollToSection(link.href, "smooth");
+  }, [isBlogRoute, navigate, scrollToSection, setSingleActive, updateHash]);
 
   return (
     <>
@@ -105,7 +208,7 @@ const Header = () => {
                   key={link.href}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link)}
-                  aria-current={isActive ? "page" : undefined}
+                  aria-current={isActive ? "true" : undefined}
                   className="relative px-2 md:px-2 lg:px-4 py-2 text-[12px] md:text-[12px] lg:text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press whitespace-nowrap focus:outline-none focus-visible:outline-none focus:ring-0"
                   onMouseEnter={() => setHoveredNav(link.href)}
                   style={{
@@ -210,7 +313,7 @@ const Header = () => {
                       key={link.href}
                       href={link.href}
                       onClick={(e) => handleNavClick(e, link)}
-                      aria-current={isActive ? "page" : undefined}
+                      aria-current={isActive ? "true" : undefined}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
