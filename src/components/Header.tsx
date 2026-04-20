@@ -22,11 +22,16 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState("#home");
   const location = useLocation();
   const navigate = useNavigate();
   const isBlogRoute = location.pathname.startsWith("/blog");
   const sectionLinks = useMemo(() => navLinks.map((link) => link.href), []);
+  const initialActiveSection = isBlogRoute
+    ? "#blog"
+    : sectionLinks.includes(location.hash)
+      ? location.hash
+      : "#home";
+  const [activeSection, setActiveSection] = useState(initialActiveSection);
   const syncFrameRef = useRef<number | null>(null);
 
   const setSingleActive = useCallback((href: string) => {
@@ -94,6 +99,10 @@ const Header = () => {
   }, [syncActiveSection]);
 
   useEffect(() => {
+    setSingleActive(initialActiveSection);
+  }, [initialActiveSection, setSingleActive]);
+
+  useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 50);
       scheduleSync();
@@ -149,18 +158,15 @@ const Header = () => {
       return;
     }
 
+    if (!location.hash) return;
+
     const targetHref = sectionLinks.includes(location.hash) ? location.hash : "#home";
     setSingleActive(targetHref);
 
     requestAnimationFrame(() => {
-      if (targetHref === "#home" && !location.hash) {
-        window.scrollTo({ top: 0, behavior: "auto" });
-        return;
-      }
-
       scrollToSection(targetHref, "auto");
     });
-  }, [isBlogRoute, location.hash, location.pathname, scrollToSection, sectionLinks, setSingleActive]);
+  }, [isBlogRoute, location.hash, scrollToSection, sectionLinks, setSingleActive]);
 
   const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string }) => {
     e.preventDefault();
