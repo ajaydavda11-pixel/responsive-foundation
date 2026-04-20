@@ -105,6 +105,7 @@ const Header = () => {
                   key={link.href}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link)}
+                  aria-current={isActive ? "page" : undefined}
                   className="relative px-2 md:px-2 lg:px-4 py-2 text-[12px] md:text-[12px] lg:text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press whitespace-nowrap focus:outline-none focus-visible:outline-none focus:ring-0"
                   onMouseEnter={() => setHoveredNav(link.href)}
                   style={{
@@ -209,6 +210,7 @@ const Header = () => {
                       key={link.href}
                       href={link.href}
                       onClick={(e) => handleNavClick(e, link)}
+                      aria-current={isActive ? "page" : undefined}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
