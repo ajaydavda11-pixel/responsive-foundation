@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -33,13 +33,21 @@ const Header = () => {
       : "#home";
   const [activeSection, setActiveSection] = useState(initialActiveSection);
   const syncFrameRef = useRef<number | null>(null);
+  const pendingSectionRef = useRef<string | null>(
+    isBlogRoute ? "#blog" : sectionLinks.includes(location.hash) ? location.hash : null,
+  );
 
   const setSingleActive = useCallback((href: string) => {
     setActiveSection((current) => (current === href ? current : href));
   }, []);
 
-  const updateHash = useCallback((href: string) => {
-    if (location.pathname !== "/" || location.hash === href) return;
+  const replaceHash = useCallback((href: string) => {
+    if (location.pathname !== "/") return;
+    window.history.replaceState(window.history.state, "", href);
+  }, [location.pathname]);
+
+  const syncHashIfIdle = useCallback((href: string) => {
+    if (location.pathname !== "/" || location.hash === href || pendingSectionRef.current) return;
     window.history.replaceState(window.history.state, "", href);
   }, [location.hash, location.pathname]);
 
@@ -54,6 +62,7 @@ const Header = () => {
 
   const syncActiveSection = useCallback(() => {
     if (isBlogRoute) {
+      pendingSectionRef.current = null;
       setSingleActive("#blog");
       return;
     }
@@ -61,31 +70,53 @@ const Header = () => {
     const sections = sectionLinks
       .map((href) => {
         const element = document.getElementById(href.replace("#", ""));
-        return element ? { href, element } : null;
+        if (!element) return null;
+        const rect = element.getBoundingClientRect();
+        return { href, rect };
       })
-      .filter((section): section is { href: string; element: HTMLElement } => Boolean(section));
+      .filter((section): section is { href: string; rect: DOMRect } => Boolean(section));
 
     if (!sections.length) return;
 
-    const viewportCenter = HEADER_OFFSET + (window.innerHeight - HEADER_OFFSET) / 2;
-    let closestHref = sections[0].href;
-    let closestDistance = Number.POSITIVE_INFINITY;
+    const probeY = HEADER_OFFSET + Math.min(Math.max((window.innerHeight - HEADER_OFFSET) * 0.35, 120), 320);
 
-    sections.forEach(({ href, element }) => {
-      const rect = element.getBoundingClientRect();
-      const center = rect.top + rect.height / 2;
-      const visible = rect.bottom > HEADER_OFFSET && rect.top < window.innerHeight;
-      const distance = Math.abs(center - viewportCenter) + (visible ? 0 : window.innerHeight);
+    const closest = sections.reduce((best, section) => {
+      const distance = probeY < section.rect.top
+        ? section.rect.top - probeY
+        : probeY > section.rect.bottom
+          ? probeY - section.rect.bottom
+          : 0;
 
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestHref = href;
+      if (!best || distance < best.distance) {
+        return { href: section.href, distance };
       }
-    });
 
-    setSingleActive(closestHref);
-    updateHash(closestHref);
-  }, [isBlogRoute, sectionLinks, setSingleActive, updateHash]);
+      return best;
+    }, null as { href: string; distance: number } | null);
+
+    if (!closest) return;
+
+    const pendingHref = pendingSectionRef.current;
+    if (pendingHref) {
+      const pendingSection = sections.find((section) => section.href === pendingHref);
+      const pendingReached = pendingSection
+        ? probeY >= pendingSection.rect.top && probeY <= pendingSection.rect.bottom
+        : false;
+
+      if (!pendingReached) {
+        setSingleActive(pendingHref);
+        return;
+      }
+
+      pendingSectionRef.current = null;
+      setSingleActive(pendingHref);
+      syncHashIfIdle(pendingHref);
+      return;
+    }
+
+    setSingleActive(closest.href);
+    syncHashIfIdle(closest.href);
+  }, [isBlogRoute, sectionLinks, setSingleActive, syncHashIfIdle]);
 
   const scheduleSync = useCallback(() => {
     if (syncFrameRef.current !== null) {
@@ -108,6 +139,7 @@ const Header = () => {
       scheduleSync();
     };
 
+    setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", scheduleSync);
     scheduleSync();
@@ -123,6 +155,7 @@ const Header = () => {
 
   useEffect(() => {
     if (isBlogRoute) {
+      pendingSectionRef.current = null;
       setSingleActive("#blog");
       return;
     }
@@ -152,8 +185,9 @@ const Header = () => {
     };
   }, [mobileOpen]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isBlogRoute) {
+      pendingSectionRef.current = null;
       setSingleActive("#blog");
       return;
     }
@@ -161,16 +195,15 @@ const Header = () => {
     if (!location.hash) return;
 
     const targetHref = sectionLinks.includes(location.hash) ? location.hash : "#home";
+    pendingSectionRef.current = targetHref;
     setSingleActive(targetHref);
-
-    requestAnimationFrame(() => {
-      scrollToSection(targetHref, "auto");
-    });
+    scrollToSection(targetHref, "auto");
   }, [isBlogRoute, location.hash, scrollToSection, sectionLinks, setSingleActive]);
 
   const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string }) => {
     e.preventDefault();
     setMobileOpen(false);
+    pendingSectionRef.current = link.href;
     setSingleActive(link.href);
 
     if (isBlogRoute) {
@@ -178,9 +211,9 @@ const Header = () => {
       return;
     }
 
-    updateHash(link.href);
+    replaceHash(link.href);
     scrollToSection(link.href, "smooth");
-  }, [isBlogRoute, navigate, scrollToSection, setSingleActive, updateHash]);
+  }, [isBlogRoute, navigate, replaceHash, scrollToSection, setSingleActive]);
 
   return (
     <>
@@ -189,15 +222,19 @@ const Header = () => {
           scrolled ? "shadow-sm border-b" : "bg-transparent"
         }`}
         style={scrolled ? {
-          background: 'hsl(var(--glass-bg))',
-          borderColor: 'hsl(var(--glass-border))',
-          backdropFilter: 'blur(12px) saturate(150%)',
-          WebkitBackdropFilter: 'blur(12px) saturate(150%)',
-          boxShadow: 'inset 0 1px 0 hsl(var(--glass-highlight)), 0 4px 20px hsl(var(--neu-shadow-dark))',
+          background: "hsl(var(--glass-bg))",
+          borderColor: "hsl(var(--glass-border))",
+          backdropFilter: "blur(12px) saturate(150%)",
+          WebkitBackdropFilter: "blur(12px) saturate(150%)",
+          boxShadow: "inset 0 1px 0 hsl(var(--glass-highlight)), 0 4px 20px hsl(var(--neu-shadow-dark))",
         } : undefined}
       >
         <div className="max-w-[1360px] mx-auto w-full flex items-center justify-between h-16 sm:h-20 px-4 sm:px-6 md:px-4 lg:px-10 xl:px-16">
-          <a href="#home" onClick={(e) => handleNavClick(e, { href: "#home" })} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-2 md:mr-2 lg:mr-10 xl:mr-20">
+          <a
+            href="#home"
+            onClick={(e) => handleNavClick(e, { href: "#home" })}
+            className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-2 md:mr-2 lg:mr-10 xl:mr-20"
+          >
             CosmetIQ<span className="text-accent">_</span>lab
           </a>
 
@@ -214,16 +251,16 @@ const Header = () => {
                   key={link.href}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link)}
-                  aria-current={isActive ? "true" : undefined}
+                  aria-current={isActive ? "page" : undefined}
                   className="relative px-2 md:px-2 lg:px-4 py-2 text-[12px] md:text-[12px] lg:text-sm font-medium transition-all duration-300 rounded-full cursor-pointer btn-press whitespace-nowrap focus:outline-none focus-visible:outline-none focus:ring-0"
                   onMouseEnter={() => setHoveredNav(link.href)}
                   style={{
                     color: isActive
-                      ? 'hsl(var(--primary-foreground))'
+                      ? "hsl(var(--primary-foreground))"
                       : isHovered
-                        ? 'hsl(var(--emerald))'
-                        : 'hsl(var(--muted-foreground))',
-                    transition: 'color 200ms ease',
+                        ? "hsl(var(--emerald))"
+                        : "hsl(var(--muted-foreground))",
+                    transition: "color 200ms ease",
                   }}
                 >
                   <AnimatePresence>
@@ -232,7 +269,7 @@ const Header = () => {
                         layoutId="nav-hover-pill"
                         className="absolute inset-0 rounded-full z-[-1]"
                         style={{
-                          background: 'hsl(var(--emerald) / 0.15)',
+                          background: "hsl(var(--emerald) / 0.15)",
                         }}
                         initial={{ opacity: 0, scale: 0.92 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -252,9 +289,7 @@ const Header = () => {
                     />
                   )}
 
-                  <span className="relative z-10">
-                    {link.label}
-                  </span>
+                  <span className="relative z-10">{link.label}</span>
                 </a>
               );
             })}
@@ -282,7 +317,7 @@ const Header = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="fixed inset-0 z-50"
-              style={{ background: 'hsl(var(--foreground) / 0.15)', backdropFilter: 'blur(8px)' }}
+              style={{ background: "hsl(var(--foreground) / 0.15)", backdropFilter: "blur(8px)" }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
@@ -292,11 +327,11 @@ const Header = () => {
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
               className="fixed right-0 top-0 bottom-0 w-[min(320px,85vw)] z-50 p-6 sm:p-8 flex flex-col"
               style={{
-                background: 'hsl(var(--glass-bg))',
-                backdropFilter: 'blur(24px) saturate(150%)',
-                WebkitBackdropFilter: 'blur(24px) saturate(150%)',
-                boxShadow: '-20px 0 60px hsl(var(--foreground) / 0.08)',
-                borderLeft: '1px solid hsl(var(--glass-border))',
+                background: "hsl(var(--glass-bg))",
+                backdropFilter: "blur(24px) saturate(150%)",
+                WebkitBackdropFilter: "blur(24px) saturate(150%)",
+                boxShadow: "-20px 0 60px hsl(var(--foreground) / 0.08)",
+                borderLeft: "1px solid hsl(var(--glass-border))",
               }}
             >
               <div className="flex justify-between items-center mb-10">
@@ -319,14 +354,14 @@ const Header = () => {
                       key={link.href}
                       href={link.href}
                       onClick={(e) => handleNavClick(e, link)}
-                      aria-current={isActive ? "true" : undefined}
+                      aria-current={isActive ? "page" : undefined}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                       className={`text-base font-medium px-4 py-3 rounded-xl transition-all duration-200 btn-press ${
                         isActive
-                          ? 'text-primary-foreground nav-active-mobile'
-                          : 'text-muted-foreground hover:text-emerald hover:bg-emerald/15'
+                          ? "text-primary-foreground nav-active-mobile"
+                          : "text-muted-foreground hover:text-emerald hover:bg-emerald/15"
                       }`}
                     >
                       {link.label}
