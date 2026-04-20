@@ -5,7 +5,7 @@ import { ArrowLeft, Calendar, Clock, Tag, User } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
-import { getPostBySlug } from "@/data/blogPosts";
+import { getPostBySlug, blogPosts } from "@/data/blogPosts";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -16,6 +16,8 @@ const BlogPost = () => {
   }, [slug]);
 
   if (!post) return <Navigate to="/blog" replace />;
+
+  const related = blogPosts.filter((p) => p.slug !== post.slug);
 
   return (
     <>
@@ -72,6 +74,40 @@ const BlogPost = () => {
                 ))}
               </div>
             </motion.div>
+
+            {related.length > 0 && (
+              <section className="mt-16 sm:mt-20 pt-10 sm:pt-12 border-t border-border/50">
+                <h2 className="font-display text-2xl sm:text-3xl font-semibold text-foreground mb-6 sm:mb-8">
+                  Related articles
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                  {related.map((rp) => (
+                    <Link
+                      key={rp.slug}
+                      to={`/blog/${rp.slug}`}
+                      className="group block rounded-2xl overflow-hidden border border-border/50 bg-card/40 hover:border-accent/50 transition-all duration-300"
+                    >
+                      <div className="aspect-[16/10] overflow-hidden">
+                        <img
+                          src={rp.image}
+                          alt={rp.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="p-4 sm:p-5">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-accent mb-2">
+                          <Tag size={12} /> {rp.category}
+                        </span>
+                        <h3 className="font-display text-base sm:text-lg font-semibold text-foreground group-hover:text-accent transition-colors leading-snug">
+                          {rp.title}
+                        </h3>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         </article>
       </main>
