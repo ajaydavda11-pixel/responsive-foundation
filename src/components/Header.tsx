@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,63 +15,205 @@ const navLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
+const HEADER_OFFSET = 80;
+const OBSERVER_THRESHOLDS = [0, 0.2, 0.35, 0.5, 0.65, 0.8, 1];
+
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState("#home");
   const location = useLocation();
   const navigate = useNavigate();
-  const onBlog = location.pathname === "/blog";
+  const isBlogRoute = location.pathname.startsWith("/blog");
+  const sectionLinks = useMemo(() => navLinks.map((link) => link.href), []);
+  const initialActiveSection = isBlogRoute
+    ? "#blog"
+    : sectionLinks.includes(location.hash)
+      ? location.hash
+      : "#home";
+  const [activeSection, setActiveSection] = useState(initialActiveSection);
+  const syncFrameRef = useRef<number | null>(null);
+  const pendingSectionRef = useRef<string | null>(
+    isBlogRoute ? "#blog" : sectionLinks.includes(location.hash) ? location.hash : null,
+  );
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+  const setSingleActive = useCallback((href: string) => {
+    setActiveSection((current) => (current === href ? current : href));
   }, []);
 
-  useEffect(() => {
-    if (onBlog) {
-      setActiveSection("/blog");
+  const replaceHash = useCallback((href: string) => {
+    if (location.pathname !== "/") return;
+    window.history.replaceState(window.history.state, "", href);
+  }, [location.pathname]);
+
+  const syncHashIfIdle = useCallback((href: string) => {
+    if (location.pathname !== "/" || location.hash === href || pendingSectionRef.current) return;
+    window.history.replaceState(window.history.state, "", href);
+  }, [location.hash, location.pathname]);
+
+  const scrollToSection = useCallback((href: string, behavior: ScrollBehavior = "smooth") => {
+    const target = document.getElementById(href.replace("#", ""));
+    if (!target) return false;
+
+    const top = Math.max(target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET, 0);
+    window.scrollTo({ top, behavior });
+    return true;
+  }, []);
+
+  const syncActiveSection = useCallback(() => {
+    if (isBlogRoute) {
+      pendingSectionRef.current = null;
+      setSingleActive("#blog");
       return;
     }
-    const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
-    const observers: IntersectionObserver[] = [];
 
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
+    const sections = sectionLinks
+      .map((href) => {
+        const element = document.getElementById(href.replace("#", ""));
+        if (!element) return null;
+        const rect = element.getBoundingClientRect();
+        return { href, rect };
+      })
+      .filter((section): section is { href: string; rect: DOMRect } => Boolean(section));
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setActiveSection(`#${id}`);
-            }
-          });
-        },
-        { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
-      );
-      observer.observe(el);
-      observers.push(observer);
+    if (!sections.length) return;
+
+    const probeY = HEADER_OFFSET + Math.min(Math.max((window.innerHeight - HEADER_OFFSET) * 0.35, 120), 320);
+
+    const closest = sections.reduce((best, section) => {
+      const distance = probeY < section.rect.top
+        ? section.rect.top - probeY
+        : probeY > section.rect.bottom
+          ? probeY - section.rect.bottom
+          : 0;
+
+      if (!best || distance < best.distance) {
+        return { href: section.href, distance };
+      }
+
+      return best;
+    }, null as { href: string; distance: number } | null);
+
+    if (!closest) return;
+
+    const pendingHref = pendingSectionRef.current;
+    if (pendingHref) {
+      const pendingSection = sections.find((section) => section.href === pendingHref);
+      const pendingReached = pendingSection
+        ? probeY >= pendingSection.rect.top && probeY <= pendingSection.rect.bottom
+        : false;
+
+      if (!pendingReached) {
+        setSingleActive(pendingHref);
+        return;
+      }
+
+      pendingSectionRef.current = null;
+      setSingleActive(pendingHref);
+      syncHashIfIdle(pendingHref);
+      return;
+    }
+
+    setSingleActive(closest.href);
+    syncHashIfIdle(closest.href);
+  }, [isBlogRoute, sectionLinks, setSingleActive, syncHashIfIdle]);
+
+  const scheduleSync = useCallback(() => {
+    if (syncFrameRef.current !== null) {
+      cancelAnimationFrame(syncFrameRef.current);
+    }
+
+    syncFrameRef.current = requestAnimationFrame(() => {
+      syncFrameRef.current = null;
+      syncActiveSection();
+    });
+  }, [syncActiveSection]);
+
+  useEffect(() => {
+    setSingleActive(initialActiveSection);
+  }, [initialActiveSection, setSingleActive]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50);
+      scheduleSync();
+    };
+
+    setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", scheduleSync);
+    scheduleSync();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", scheduleSync);
+      if (syncFrameRef.current !== null) {
+        cancelAnimationFrame(syncFrameRef.current);
+      }
+    };
+  }, [scheduleSync]);
+
+  useEffect(() => {
+    if (isBlogRoute) {
+      pendingSectionRef.current = null;
+      setSingleActive("#blog");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      () => scheduleSync(),
+      {
+        rootMargin: `-${HEADER_OFFSET}px 0px -20% 0px`,
+        threshold: OBSERVER_THRESHOLDS,
+      },
+    );
+
+    sectionLinks.forEach((href) => {
+      const element = document.getElementById(href.replace("#", ""));
+      if (element) observer.observe(element);
     });
 
-    return () => observers.forEach((o) => o.disconnect());
-  }, [onBlog]);
+    scheduleSync();
+
+    return () => observer.disconnect();
+  }, [isBlogRoute, scheduleSync, sectionLinks, setSingleActive]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
-  const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string }) => {
-    setMobileOpen(false);
-    setActiveSection(link.href);
-    if (onBlog) {
-      e.preventDefault();
-      navigate("/" + link.href);
+  useLayoutEffect(() => {
+    if (isBlogRoute) {
+      pendingSectionRef.current = null;
+      setSingleActive("#blog");
+      return;
     }
-  }, [navigate, onBlog]);
+
+    if (!location.hash) return;
+
+    const targetHref = sectionLinks.includes(location.hash) ? location.hash : "#home";
+    pendingSectionRef.current = targetHref;
+    setSingleActive(targetHref);
+    scrollToSection(targetHref, "auto");
+  }, [isBlogRoute, location.hash, scrollToSection, sectionLinks, setSingleActive]);
+
+  const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string }) => {
+    e.preventDefault();
+    setMobileOpen(false);
+    pendingSectionRef.current = link.href;
+    setSingleActive(link.href);
+
+    if (isBlogRoute) {
+      navigate(`/${link.href}`);
+      return;
+    }
+
+    replaceHash(link.href);
+    scrollToSection(link.href, "smooth");
+  }, [isBlogRoute, navigate, replaceHash, scrollToSection, setSingleActive]);
 
   return (
     <>
@@ -80,15 +222,19 @@ const Header = () => {
           scrolled ? "shadow-sm border-b" : "bg-transparent"
         }`}
         style={scrolled ? {
-          background: 'hsl(var(--glass-bg))',
-          borderColor: 'hsl(var(--glass-border))',
-          backdropFilter: 'blur(12px) saturate(150%)',
-          WebkitBackdropFilter: 'blur(12px) saturate(150%)',
-          boxShadow: 'inset 0 1px 0 hsl(var(--glass-highlight)), 0 4px 20px hsl(var(--neu-shadow-dark))',
+          background: "hsl(var(--glass-bg))",
+          borderColor: "hsl(var(--glass-border))",
+          backdropFilter: "blur(12px) saturate(150%)",
+          WebkitBackdropFilter: "blur(12px) saturate(150%)",
+          boxShadow: "inset 0 1px 0 hsl(var(--glass-highlight)), 0 4px 20px hsl(var(--neu-shadow-dark))",
         } : undefined}
       >
         <div className="max-w-[1360px] mx-auto w-full flex items-center justify-between h-16 sm:h-20 px-4 sm:px-6 md:px-4 lg:px-10 xl:px-16">
-          <a href="#home" onClick={(e) => handleNavClick(e, { href: "#home" })} className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-2 md:mr-2 lg:mr-10 xl:mr-20">
+          <a
+            href="#home"
+            onClick={(e) => handleNavClick(e, { href: "#home" })}
+            className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-foreground btn-press shrink-0 mr-2 md:mr-2 lg:mr-10 xl:mr-20"
+          >
             CosmetIQ<span className="text-accent">_</span>lab
           </a>
 
@@ -110,11 +256,11 @@ const Header = () => {
                   onMouseEnter={() => setHoveredNav(link.href)}
                   style={{
                     color: isActive
-                      ? 'hsl(var(--primary-foreground))'
+                      ? "hsl(var(--primary-foreground))"
                       : isHovered
-                        ? 'hsl(var(--emerald))'
-                        : 'hsl(var(--muted-foreground))',
-                    transition: 'color 200ms ease',
+                        ? "hsl(var(--emerald))"
+                        : "hsl(var(--muted-foreground))",
+                    transition: "color 200ms ease",
                   }}
                 >
                   <AnimatePresence>
@@ -123,7 +269,7 @@ const Header = () => {
                         layoutId="nav-hover-pill"
                         className="absolute inset-0 rounded-full z-[-1]"
                         style={{
-                          background: 'hsl(var(--emerald) / 0.15)',
+                          background: "hsl(var(--emerald) / 0.15)",
                         }}
                         initial={{ opacity: 0, scale: 0.92 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -143,9 +289,7 @@ const Header = () => {
                     />
                   )}
 
-                  <span className="relative z-10">
-                    {link.label}
-                  </span>
+                  <span className="relative z-10">{link.label}</span>
                 </a>
               );
             })}
@@ -173,7 +317,7 @@ const Header = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="fixed inset-0 z-50"
-              style={{ background: 'hsl(var(--foreground) / 0.15)', backdropFilter: 'blur(8px)' }}
+              style={{ background: "hsl(var(--foreground) / 0.15)", backdropFilter: "blur(8px)" }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
@@ -183,11 +327,11 @@ const Header = () => {
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
               className="fixed right-0 top-0 bottom-0 w-[min(320px,85vw)] z-50 p-6 sm:p-8 flex flex-col"
               style={{
-                background: 'hsl(var(--glass-bg))',
-                backdropFilter: 'blur(24px) saturate(150%)',
-                WebkitBackdropFilter: 'blur(24px) saturate(150%)',
-                boxShadow: '-20px 0 60px hsl(var(--foreground) / 0.08)',
-                borderLeft: '1px solid hsl(var(--glass-border))',
+                background: "hsl(var(--glass-bg))",
+                backdropFilter: "blur(24px) saturate(150%)",
+                WebkitBackdropFilter: "blur(24px) saturate(150%)",
+                boxShadow: "-20px 0 60px hsl(var(--foreground) / 0.08)",
+                borderLeft: "1px solid hsl(var(--glass-border))",
               }}
             >
               <div className="flex justify-between items-center mb-10">
@@ -216,8 +360,8 @@ const Header = () => {
                       transition={{ delay: i * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                       className={`text-base font-medium px-4 py-3 rounded-xl transition-all duration-200 btn-press ${
                         isActive
-                          ? 'text-primary-foreground nav-active-mobile'
-                          : 'text-muted-foreground hover:text-emerald hover:bg-emerald/15'
+                          ? "text-primary-foreground nav-active-mobile"
+                          : "text-muted-foreground hover:text-emerald hover:bg-emerald/15"
                       }`}
                     >
                       {link.label}
