@@ -36,12 +36,17 @@ const BlogSection = () => {
               className="group rounded-2xl overflow-hidden bg-card border border-border/50 hover:border-emerald/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
               <Link to={`/blog/${post.slug}`} className="block">
-                <div className="h-[280px] overflow-hidden">
+                <div className="aspect-[16/10] overflow-hidden bg-muted">
                   <img
                     src={post.image}
-                    alt={post.title}
+                    alt={`${post.title} — ${post.category} article cover`}
                     loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      img.src =
+                        "https://images.unsplash.com/photo-1522335789203-aaa3aad24a55?auto=format&fit=crop&w=1600&q=80";
+                    }}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                   />
                 </div>
                 <div className="p-6">
