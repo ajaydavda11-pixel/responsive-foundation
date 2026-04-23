@@ -15,8 +15,14 @@ const navLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
-const HEADER_OFFSET = 80;
-const OBSERVER_THRESHOLDS = [0, 0.2, 0.35, 0.5, 0.65, 0.8, 1];
+// Matches the fixed header height (h-20 on >= sm, h-16 on mobile) plus a small gap
+// so anchored sections always land cleanly below the navbar.
+const getHeaderOffset = () => {
+  if (typeof window === "undefined") return 96;
+  return window.innerWidth < 640 ? 76 : 96;
+};
+const HEADER_OFFSET = 96;
+const OBSERVER_THRESHOLDS = [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1];
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
