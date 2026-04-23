@@ -15,8 +15,14 @@ const navLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
-const HEADER_OFFSET = 80;
-const OBSERVER_THRESHOLDS = [0, 0.2, 0.35, 0.5, 0.65, 0.8, 1];
+// Matches the fixed header height (h-20 on >= sm, h-16 on mobile) plus a small gap
+// so anchored sections always land cleanly below the navbar.
+const getHeaderOffset = () => {
+  if (typeof window === "undefined") return 96;
+  return window.innerWidth < 640 ? 76 : 96;
+};
+const HEADER_OFFSET = 96;
+const OBSERVER_THRESHOLDS = [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1];
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -55,7 +61,8 @@ const Header = () => {
     const target = document.getElementById(href.replace("#", ""));
     if (!target) return false;
 
-    const top = Math.max(target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET, 0);
+    const offset = getHeaderOffset();
+    const top = Math.max(target.getBoundingClientRect().top + window.scrollY - offset, 0);
     window.scrollTo({ top, behavior });
     return true;
   }, []);
@@ -78,7 +85,10 @@ const Header = () => {
 
     if (!sections.length) return;
 
-    const probeY = HEADER_OFFSET + Math.min(Math.max((window.innerHeight - HEADER_OFFSET) * 0.35, 120), 320);
+    // Use the viewport center (offset by header) as the probe line so the active
+    // nav item changes exactly when each section is centered in view.
+    const offset = getHeaderOffset();
+    const probeY = offset + (window.innerHeight - offset) * 0.5;
 
     const closest = sections.reduce((best, section) => {
       const distance = probeY < section.rect.top
@@ -160,10 +170,12 @@ const Header = () => {
       return;
     }
 
+    // Trim ~50% off the top and bottom of the viewport so the observer fires
+    // around the horizontal center line — matching the probe used above.
     const observer = new IntersectionObserver(
       () => scheduleSync(),
       {
-        rootMargin: `-${HEADER_OFFSET}px 0px -20% 0px`,
+        rootMargin: `-50% 0px -50% 0px`,
         threshold: OBSERVER_THRESHOLDS,
       },
     );
