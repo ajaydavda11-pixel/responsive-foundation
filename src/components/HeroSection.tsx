@@ -75,6 +75,9 @@ const HeroSection = () => (
               alt="CosmetIQ_lab luxury cosmetic laboratory"
               className="w-full h-auto rounded-[24px]"
               loading="eager"
+              decoding="async"
+              // @ts-expect-error fetchpriority is a valid HTML attribute, not yet in React types
+              fetchpriority="high"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 to-transparent rounded-[24px]" />
           </div>

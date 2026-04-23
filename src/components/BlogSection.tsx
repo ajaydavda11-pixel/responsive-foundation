@@ -41,10 +41,13 @@ const BlogSection = () => {
                     src={post.image}
                     alt={`${post.title} — ${post.category} article cover`}
                     loading="lazy"
+                    decoding="async"
+                    width={900}
+                    height={563}
                     onError={(e) => {
                       const img = e.currentTarget;
                       img.src =
-                        "https://images.unsplash.com/photo-1522335789203-aaa3aad24a55?auto=format&fit=crop&w=1600&q=80";
+                        "https://images.unsplash.com/photo-1522335789203-aaa3aad24a55?auto=format&fit=crop&w=900&q=70";
                     }}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                   />
