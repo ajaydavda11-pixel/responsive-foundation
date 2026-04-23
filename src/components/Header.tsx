@@ -61,7 +61,8 @@ const Header = () => {
     const target = document.getElementById(href.replace("#", ""));
     if (!target) return false;
 
-    const top = Math.max(target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET, 0);
+    const offset = getHeaderOffset();
+    const top = Math.max(target.getBoundingClientRect().top + window.scrollY - offset, 0);
     window.scrollTo({ top, behavior });
     return true;
   }, []);
@@ -84,7 +85,10 @@ const Header = () => {
 
     if (!sections.length) return;
 
-    const probeY = HEADER_OFFSET + Math.min(Math.max((window.innerHeight - HEADER_OFFSET) * 0.35, 120), 320);
+    // Use the viewport center (offset by header) as the probe line so the active
+    // nav item changes exactly when each section is centered in view.
+    const offset = getHeaderOffset();
+    const probeY = offset + (window.innerHeight - offset) * 0.5;
 
     const closest = sections.reduce((best, section) => {
       const distance = probeY < section.rect.top
