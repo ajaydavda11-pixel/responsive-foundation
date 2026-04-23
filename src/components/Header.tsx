@@ -170,10 +170,12 @@ const Header = () => {
       return;
     }
 
+    // Trim ~50% off the top and bottom of the viewport so the observer fires
+    // around the horizontal center line — matching the probe used above.
     const observer = new IntersectionObserver(
       () => scheduleSync(),
       {
-        rootMargin: `-${HEADER_OFFSET}px 0px -20% 0px`,
+        rootMargin: `-50% 0px -50% 0px`,
         threshold: OBSERVER_THRESHOLDS,
       },
     );
