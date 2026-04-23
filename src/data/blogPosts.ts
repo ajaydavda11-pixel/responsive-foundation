@@ -20,7 +20,7 @@ export const blogPosts: BlogPost[] = [
     date: "Apr 12, 2026",
     readTime: "8 min",
     image:
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?auto=format&fit=crop&w=1600&q=80",
     author: "Dr. Elena Marchetti",
     content: [
       "Active serums have evolved far beyond simple aqueous solutions. Today's next-generation formulations rely on sophisticated delivery systems — liposomes, niosomes, and polymeric nanoparticles — that protect fragile actives until they reach their target in the skin.",
@@ -38,7 +38,7 @@ export const blogPosts: BlogPost[] = [
     date: "Apr 08, 2026",
     readTime: "6 min",
     image:
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1600&q=80",
     author: "Dr. Marcus Chen",
     content: [
       "Hyaluronic acid is one of skincare's most beloved ingredients — but not all HA is created equal. Molecular weight dictates how deeply it penetrates and what kind of hydration it provides.",

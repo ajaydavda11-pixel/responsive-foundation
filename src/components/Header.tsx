@@ -197,7 +197,7 @@ const Header = () => {
     const targetHref = sectionLinks.includes(location.hash) ? location.hash : "#home";
     pendingSectionRef.current = targetHref;
     setSingleActive(targetHref);
-    scrollToSection(targetHref, "auto");
+    scrollToSection(targetHref, "smooth");
   }, [isBlogRoute, location.hash, scrollToSection, sectionLinks, setSingleActive]);
 
   const handleNavClick = useCallback((e: React.MouseEvent, link: { href: string }) => {
