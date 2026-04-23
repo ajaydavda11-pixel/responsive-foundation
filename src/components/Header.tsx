@@ -149,14 +149,24 @@ const Header = () => {
       scheduleSync();
     };
 
+    // On resize / orientation change the header height and viewport center can
+    // shift (e.g. h-16 ↔ h-20 at the sm breakpoint, or rotating a device).
+    // Recompute scroll-spy immediately so the active pill stays aligned with the
+    // section currently centered in the new viewport.
+    const onResize = () => {
+      scheduleSync();
+    };
+
     setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", scheduleSync);
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
     scheduleSync();
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", scheduleSync);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
       if (syncFrameRef.current !== null) {
         cancelAnimationFrame(syncFrameRef.current);
       }
