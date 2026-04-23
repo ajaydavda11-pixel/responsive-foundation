@@ -11,23 +11,25 @@ import FAQSection from "@/components/FAQSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import RevealOnScroll from "@/components/RevealOnScroll";
 
 const Index = () => (
   <>
     <Header />
     <HeroSection />
-    <AboutSection />
-    <ServicesSection />
-    <ProductsSection />
-    <ProcessSection />
-    <IndustriesSection />
-    <WhyChooseSection />
-    <BlogSection />
-    <FAQSection />
-    <ContactSection />
+    <RevealOnScroll><AboutSection /></RevealOnScroll>
+    <RevealOnScroll><ServicesSection /></RevealOnScroll>
+    <RevealOnScroll><ProductsSection /></RevealOnScroll>
+    <RevealOnScroll><ProcessSection /></RevealOnScroll>
+    <RevealOnScroll><IndustriesSection /></RevealOnScroll>
+    <RevealOnScroll><WhyChooseSection /></RevealOnScroll>
+    <RevealOnScroll><BlogSection /></RevealOnScroll>
+    <RevealOnScroll><FAQSection /></RevealOnScroll>
+    <RevealOnScroll><ContactSection /></RevealOnScroll>
     <Footer />
     <ScrollToTop />
   </>
 );
 
 export default Index;
+
