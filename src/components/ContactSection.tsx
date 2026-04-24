@@ -1,8 +1,7 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Instagram } from "lucide-react";
-import logoLight from "@/assets/logo-light.png";
-import logoDark from "@/assets/logo-dark.png";
+import logoSvg from "@/assets/logo.svg";
 
 const projectTypes = [
   "Skin Care Formulation", "Hair Care Development", "Perfume Creation",
@@ -50,27 +49,44 @@ const ContactSection = () => {
             className="space-y-3 sm:space-y-4 lg:space-y-6"
           >
             <div className="flex justify-center pt-2 sm:pt-4 pb-1 sm:pb-2">
-              <div className="relative">
-                {/* Light mode logo */}
-                <img
-                  src={logoLight}
-                  alt="CosmetIQ_lab — Empowering Beautycare"
-                  width={150}
-                  height={150}
-                  loading="lazy"
-                  decoding="async"
-                  className="block dark:hidden w-[80px] sm:w-[110px] lg:w-[140px] h-auto transition-opacity duration-500"
+              {/* SVG masked + tinted per theme — sharp at any size, true opacity crossfade, zero layout shift */}
+              <div
+                className="relative w-[80px] sm:w-[110px] lg:w-[140px] aspect-square"
+                aria-label="CosmetIQ_lab — Empowering Beautycare"
+                role="img"
+              >
+                {/* Light mode: black logo */}
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 opacity-100 dark:opacity-0 transition-opacity duration-500 ease-out"
+                  style={{
+                    backgroundColor: "hsl(var(--foreground))",
+                    WebkitMaskImage: `url(${logoSvg})`,
+                    maskImage: `url(${logoSvg})`,
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
+                  }}
                 />
-                {/* Dark mode logo with subtle gold glow */}
-                <img
-                  src={logoDark}
-                  alt="CosmetIQ_lab — Empowering Beautycare"
-                  width={150}
-                  height={150}
-                  loading="lazy"
-                  decoding="async"
-                  className="hidden dark:block w-[80px] sm:w-[110px] lg:w-[140px] h-auto transition-opacity duration-500"
-                  style={{ filter: "drop-shadow(0 0 18px hsl(var(--accent) / 0.35))" }}
+                {/* Dark mode: gold logo with subtle glow */}
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 opacity-0 dark:opacity-100 transition-opacity duration-500 ease-out"
+                  style={{
+                    backgroundColor: "hsl(var(--accent))",
+                    WebkitMaskImage: `url(${logoSvg})`,
+                    maskImage: `url(${logoSvg})`,
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
+                    filter: "drop-shadow(0 0 18px hsl(var(--accent) / 0.35))",
+                  }}
                 />
               </div>
             </div>
