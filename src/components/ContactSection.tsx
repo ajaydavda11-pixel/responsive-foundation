@@ -49,34 +49,42 @@ const ContactSection = () => {
             className="space-y-3 sm:space-y-4 lg:space-y-6"
           >
             <div className="flex justify-center pt-2 sm:pt-4 pb-1 sm:pb-2">
-              {/* Single SVG, recolored per theme via currentColor — true opacity crossfade, zero layout shift */}
+              {/* SVG masked + tinted per theme — sharp at any size, true opacity crossfade, zero layout shift */}
               <div
                 className="relative w-[80px] sm:w-[110px] lg:w-[140px] aspect-square"
                 aria-label="CosmetIQ_lab — Empowering Beautycare"
                 role="img"
               >
                 {/* Light mode: black logo */}
-                <img
-                  src={logoSvg}
-                  alt=""
-                  width={140}
-                  height={140}
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute inset-0 w-full h-full text-foreground opacity-100 dark:opacity-0 transition-opacity duration-500 ease-out"
-                  style={{ color: "hsl(var(--foreground))" }}
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 opacity-100 dark:opacity-0 transition-opacity duration-500 ease-out"
+                  style={{
+                    backgroundColor: "hsl(var(--foreground))",
+                    WebkitMaskImage: `url(${logoSvg})`,
+                    maskImage: `url(${logoSvg})`,
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
+                  }}
                 />
                 {/* Dark mode: gold logo with subtle glow */}
-                <img
-                  src={logoSvg}
-                  alt=""
-                  width={140}
-                  height={140}
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute inset-0 w-full h-full opacity-0 dark:opacity-100 transition-opacity duration-500 ease-out"
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 opacity-0 dark:opacity-100 transition-opacity duration-500 ease-out"
                   style={{
-                    color: "hsl(var(--accent))",
+                    backgroundColor: "hsl(var(--accent))",
+                    WebkitMaskImage: `url(${logoSvg})`,
+                    maskImage: `url(${logoSvg})`,
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
                     filter: "drop-shadow(0 0 18px hsl(var(--accent) / 0.35))",
                   }}
                 />
