@@ -76,8 +76,8 @@ const Footer = () => (
       </div>
 
       {/* Left on desktop / Bottom on mobile: Copyright */}
-      <p className="text-sm sm:text-[15px] font-medium opacity-70 text-center md:text-left order-2 md:order-1">
-        © {new Date().getFullYear()} CosmetIQ_lab. All rights reserved.
+      <p className="text-xs sm:text-[13px] font-normal opacity-65 text-center md:text-left order-2 md:order-1 py-1">
+        © 2026 CosmeticIQ_lab. All rights reserved.
       </p>
     </div>
   </footer>
