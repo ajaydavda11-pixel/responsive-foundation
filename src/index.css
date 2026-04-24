@@ -727,3 +727,168 @@ html.theme-transition *::after {
   }
 }
 
+/* ============================================================
+   Premium polish layer — gradients, shadows, micro-interactions
+   Visual refinement only; no structural or layout changes.
+   ============================================================ */
+
+@layer base {
+  /* Refined typographic rhythm for crisper hierarchy */
+  body {
+    font-feature-settings: "kern", "liga", "calt", "ss01";
+    letter-spacing: -0.005em;
+  }
+  h1, h2, h3, h4 {
+    font-feature-settings: "kern", "liga", "dlig";
+  }
+  h2 { letter-spacing: -0.025em; }
+  h3 { letter-spacing: -0.018em; }
+  p { color: hsl(var(--foreground) / 0.82); }
+  .dark p { color: hsl(var(--foreground) / 0.78); }
+
+  /* Buttery-smooth scroll with momentum on supporting platforms */
+  html {
+    scroll-behavior: smooth;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Slimmer, more elegant scrollbar gradient */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,
+      hsl(var(--emerald) / 0.55),
+      hsl(var(--accent) / 0.45));
+    border-radius: 999px;
+  }
+}
+
+@layer components {
+  /* Softer, more premium gradient for the hero/background blends */
+  .emerald-gradient {
+    background: linear-gradient(135deg,
+      hsl(var(--emerald)) 0%,
+      hsl(var(--emerald-light)) 55%,
+      hsl(var(--accent) / 0.85) 100%);
+    background-size: 180% 180%;
+    transition: background-position 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .emerald-gradient:hover {
+    background-position: 100% 50%;
+  }
+
+  .gold-gradient {
+    background: linear-gradient(135deg,
+      hsl(var(--gold)) 0%,
+      hsl(var(--gold-light)) 60%,
+      hsl(var(--ivory-warm)) 100%);
+  }
+
+  /* Refined glass — slightly cleaner blur and lighter neumorphic shadows */
+  .glass-card,
+  .glass-card-elevated {
+    backdrop-filter: blur(22px) saturate(155%);
+    -webkit-backdrop-filter: blur(22px) saturate(155%);
+    transition:
+      transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 350ms ease;
+  }
+  .glass-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 18px 44px hsl(var(--foreground) / 0.12),
+      0 4px 12px hsl(var(--foreground) / 0.06),
+      inset 0 1px 0 hsl(var(--glass-highlight));
+  }
+  .glass-card-elevated:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 22px 56px hsl(var(--foreground) / 0.14),
+      0 6px 16px hsl(var(--foreground) / 0.07),
+      inset 0 1px 0 hsl(var(--glass-highlight));
+  }
+
+  /* Premium button — gentler lift, refined shimmer */
+  .btn-premium {
+    transition:
+      transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 380ms ease;
+  }
+  .btn-premium:hover {
+    transform: translateY(-2px) scale(1.02);
+    filter: saturate(1.08) brightness(1.03);
+    box-shadow:
+      0 12px 32px hsl(var(--emerald) / 0.32),
+      0 3px 10px hsl(var(--emerald) / 0.18);
+  }
+  .btn-outline-premium:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  /* Image polish — subtler zoom, smoother shadow transition */
+  .img-premium {
+    transition:
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 600ms ease;
+  }
+  .img-premium:hover {
+    transform: scale(1.015) translateY(-2px);
+    filter: saturate(1.05);
+  }
+
+  /* Inputs — softer focus glow */
+  .input-ios:focus {
+    box-shadow:
+      0 0 0 4px hsl(var(--primary) / 0.12),
+      0 8px 24px hsl(var(--primary) / 0.08);
+  }
+
+  /* Active nav pill — smoother gradient & glow */
+  .nav-active-pill,
+  .nav-active-mobile {
+    background: linear-gradient(135deg,
+      hsl(var(--emerald)) 0%,
+      hsl(var(--emerald-light)) 70%,
+      hsl(var(--accent) / 0.9) 100%);
+    box-shadow:
+      0 6px 18px hsl(var(--emerald) / 0.32),
+      inset 0 1px 0 hsl(0 0% 100% / 0.18);
+  }
+}
+
+@layer utilities {
+  /* Soft ambient surface gradient — opt-in for sections that need depth */
+  .surface-gradient {
+    background:
+      radial-gradient(1200px 600px at 0% 0%, hsl(var(--emerald) / 0.06), transparent 60%),
+      radial-gradient(1000px 500px at 100% 100%, hsl(var(--gold) / 0.07), transparent 60%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(var(--ivory-warm)));
+  }
+
+  /* Crisper text-rendering helper for marketing headlines */
+  .text-crisp {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+  }
+
+  /* Content-visibility helper boosts perceived scroll perf for long sections */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 800px;
+  }
+}
+
+/* GPU-friendly defaults for animated layers (perceived smoothness) */
+.bubble,
+.img-premium,
+.glass-card,
+.glass-card-elevated,
+.btn-premium,
+.btn-outline-premium {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
