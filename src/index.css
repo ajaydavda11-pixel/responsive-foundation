@@ -892,3 +892,196 @@ html.theme-transition *::after {
   backface-visibility: hidden;
 }
 
+/* ============================================================
+   Apple-level polish — Round II
+   Luminous gradients, deeper glass, refined motion, subtle parallax.
+   Visual + motion only. No structural changes.
+   ============================================================ */
+
+@layer base {
+  /* iOS-style optical refinement */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+  }
+  body {
+    font-feature-settings: "kern", "liga", "calt", "ss01", "cv11";
+    letter-spacing: -0.011em;
+    line-height: 1.55;
+  }
+  /* Tighter, more confident display tracking — Apple SF-style */
+  h1 { letter-spacing: -0.035em; line-height: 1.06; font-weight: 600; }
+  h2 { letter-spacing: -0.028em; line-height: 1.12; font-weight: 600; }
+  h3 { letter-spacing: -0.02em;  line-height: 1.2;  font-weight: 600; }
+  h4 { letter-spacing: -0.015em; line-height: 1.3;  font-weight: 600; }
+  p, li { letter-spacing: -0.005em; }
+
+  /* Buttery selection */
+  ::selection {
+    background: hsl(var(--accent) / 0.28);
+    color: hsl(var(--accent-foreground));
+  }
+
+  /* Smoother native focus ring */
+  :focus-visible {
+    outline: 2px solid hsl(var(--accent) / 0.85);
+    outline-offset: 3px;
+    border-radius: 8px;
+    transition: outline-color 200ms ease, outline-offset 200ms ease;
+  }
+}
+
+@layer components {
+  /* Luminous, layered emerald gradient — soft transitions, no banding */
+  .emerald-gradient {
+    background:
+      radial-gradient(120% 100% at 0% 0%, hsl(var(--emerald-light) / 0.85), transparent 60%),
+      radial-gradient(120% 100% at 100% 100%, hsl(var(--accent) / 0.55), transparent 55%),
+      linear-gradient(135deg,
+        hsl(var(--emerald)) 0%,
+        hsl(var(--emerald-light)) 65%,
+        hsl(var(--accent) / 0.9) 100%);
+    background-size: 200% 200%, 200% 200%, 200% 200%;
+    transition: background-position 700ms cubic-bezier(0.22, 1, 0.36, 1),
+                filter 350ms ease;
+  }
+  .emerald-gradient:hover {
+    background-position: 100% 50%, 0% 50%, 100% 50%;
+    filter: saturate(1.06) brightness(1.02);
+  }
+
+  /* Deeper, layered glass — Apple Vision-style translucency */
+  .glass-card,
+  .glass-card-elevated {
+    background:
+      linear-gradient(135deg,
+        hsl(var(--glass-highlight)) 0%,
+        transparent 40%),
+      hsl(var(--glass-bg));
+    backdrop-filter: blur(28px) saturate(170%);
+    -webkit-backdrop-filter: blur(28px) saturate(170%);
+    border-color: hsl(var(--glass-border));
+    box-shadow:
+      0 1px 0 hsl(var(--glass-highlight)) inset,
+      0 8px 24px hsl(var(--foreground) / 0.06),
+      0 2px 6px hsl(var(--foreground) / 0.04);
+  }
+  .glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 hsl(var(--glass-highlight)) inset,
+      0 16px 40px hsl(var(--foreground) / 0.10),
+      0 4px 12px hsl(var(--foreground) / 0.06);
+  }
+  .glass-card-elevated:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 0 hsl(var(--glass-highlight)) inset,
+      0 22px 56px hsl(var(--foreground) / 0.12),
+      0 6px 16px hsl(var(--foreground) / 0.07);
+  }
+
+  /* Buttons — Apple-style press: scale + opacity, ultra-fast */
+  .btn-premium,
+  .btn-outline-premium {
+    transition:
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 240ms ease,
+      opacity 200ms ease;
+  }
+  .btn-premium:active,
+  .btn-outline-premium:active {
+    transform: scale(0.97);
+    opacity: 0.92;
+    transition-duration: 90ms;
+  }
+
+  /* Inputs — soft glowing focus */
+  .input-ios {
+    transition:
+      border-color 250ms ease,
+      box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      background 250ms ease;
+  }
+  .input-ios:focus {
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow:
+      0 0 0 4px hsl(var(--primary) / 0.14),
+      0 8px 28px hsl(var(--primary) / 0.10),
+      inset 0 1px 0 hsl(var(--glass-highlight));
+    background: hsl(var(--background) / 0.92);
+  }
+
+  /* Refined nav active pill — luminous, no harsh edge */
+  .nav-active-pill,
+  .nav-active-mobile {
+    background:
+      linear-gradient(135deg,
+        hsl(var(--emerald)) 0%,
+        hsl(var(--emerald-light)) 60%,
+        hsl(var(--accent) / 0.92) 100%);
+    box-shadow:
+      0 6px 20px hsl(var(--emerald) / 0.32),
+      inset 0 1px 0 hsl(0 0% 100% / 0.22),
+      inset 0 -1px 0 hsl(0 0% 0% / 0.06);
+  }
+}
+
+@layer utilities {
+  /* Luminous ambient surface (opt-in, doesn't affect existing sections) */
+  .surface-luminous {
+    background:
+      radial-gradient(900px 500px at 10% 0%, hsl(var(--emerald) / 0.07), transparent 60%),
+      radial-gradient(800px 400px at 100% 30%, hsl(var(--gold) / 0.08), transparent 60%),
+      radial-gradient(700px 400px at 50% 100%, hsl(var(--accent) / 0.05), transparent 60%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(var(--ivory-warm)));
+  }
+
+  /* Subtle grain — adds depth, kills flatness */
+  .grain-subtle {
+    position: relative;
+    isolation: isolate;
+  }
+  .grain-subtle::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.018;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  /* Very subtle parallax for floating bubbles — premium depth */
+  .parallax-slow { will-change: transform; animation: parallax-slow 14s ease-in-out infinite; }
+  .parallax-med  { will-change: transform; animation: parallax-med  10s ease-in-out infinite; }
+}
+
+@keyframes parallax-slow {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -10px, 0); }
+}
+@keyframes parallax-med {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(6px, -14px, 0); }
+}
+
+/* Smoother bubble float (replaces the previous keyframe with eased motion) */
+@keyframes bubble-float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(4px, -14px, 0) scale(1.02); }
+}
+
+/* Honor reduced motion for the new animations too */
+@media (prefers-reduced-motion: reduce) {
+  .parallax-slow,
+  .parallax-med {
+    animation: none !important;
+  }
+}
+
+
