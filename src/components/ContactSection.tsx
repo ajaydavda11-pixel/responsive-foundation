@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Instagram } from "lucide-react";
+import logoLight from "@/assets/logo-light.png";
+import logoDark from "@/assets/logo-dark.png";
 
 const projectTypes = [
   "Skin Care Formulation", "Hair Care Development", "Perfume Creation",
@@ -47,6 +49,31 @@ const ContactSection = () => {
             transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="space-y-3 sm:space-y-4 lg:space-y-6"
           >
+            <div className="flex justify-center pt-2 sm:pt-4 pb-1 sm:pb-2">
+              <div className="relative">
+                {/* Light mode logo */}
+                <img
+                  src={logoLight}
+                  alt="CosmetIQ_lab — Empowering Beautycare"
+                  width={150}
+                  height={150}
+                  loading="lazy"
+                  decoding="async"
+                  className="block dark:hidden w-[80px] sm:w-[110px] lg:w-[140px] h-auto transition-opacity duration-500"
+                />
+                {/* Dark mode logo with subtle gold glow */}
+                <img
+                  src={logoDark}
+                  alt="CosmetIQ_lab — Empowering Beautycare"
+                  width={150}
+                  height={150}
+                  loading="lazy"
+                  decoding="async"
+                  className="hidden dark:block w-[80px] sm:w-[110px] lg:w-[140px] h-auto transition-opacity duration-500"
+                  style={{ filter: "drop-shadow(0 0 18px hsl(var(--accent) / 0.35))" }}
+                />
+              </div>
+            </div>
             {[
               { icon: Phone, label: "Phone", value: "+91 8980176442" },
               { icon: Mail, label: "Email", value: "cosmetiq.labs@gmail.com" },
