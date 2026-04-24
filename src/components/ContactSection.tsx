@@ -46,15 +46,24 @@ const ContactSection = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="space-y-3 sm:space-y-4 lg:space-y-6"
+            className="flex flex-col gap-3 sm:gap-3.5"
           >
-            <div className="flex justify-center pt-2 sm:pt-4 pb-1 sm:pb-2">
+            <div className="flex justify-center pt-5 sm:pt-6 pb-6 sm:pb-7">
               {/* SVG masked + tinted per theme — sharp at any size, true opacity crossfade, zero layout shift */}
               <div
-                className="relative w-[80px] sm:w-[110px] lg:w-[140px] aspect-square"
+                className="relative w-[120px] sm:w-[150px] lg:w-[200px] aspect-square"
                 aria-label="CosmetIQ_lab — Empowering Beautycare"
                 role="img"
               >
+                {/* Soft ambient glow behind logo */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-full pointer-events-none opacity-60 dark:opacity-80 blur-2xl scale-90"
+                  style={{
+                    background:
+                      "radial-gradient(circle at center, hsl(var(--accent) / 0.18) 0%, hsl(var(--primary) / 0.08) 45%, transparent 70%)",
+                  }}
+                />
                 {/* Light mode: black logo */}
                 <span
                   aria-hidden="true"
@@ -85,7 +94,7 @@ const ContactSection = () => {
                     maskSize: "contain",
                     WebkitMaskPosition: "center",
                     maskPosition: "center",
-                    filter: "drop-shadow(0 0 18px hsl(var(--accent) / 0.35))",
+                    filter: "drop-shadow(0 0 22px hsl(var(--accent) / 0.4))",
                   }}
                 />
               </div>
@@ -96,23 +105,26 @@ const ContactSection = () => {
               { icon: Instagram, label: "Instagram", value: "cosmetiq.labs", href: "https://www.instagram.com/cosmetiq.labs?igsh=ZjhlY3ozcXF5MTE0&utm_source=ig_contact_invite" },
               { icon: MapPin, label: "Location", value: "Nashik, Maharastra, India." },
             ].map(({ icon: Icon, label, value, href }) => (
-              <div key={label} className="glass-card p-4 sm:p-6 flex items-center gap-3 sm:gap-4">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-muted flex items-center justify-center flex-shrink-0 icon-bubble">
-                  <Icon size={16} className="text-primary sm:w-[18px] sm:h-[18px]" />
+              <div
+                key={label}
+                className="glass-card px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 sm:gap-3.5 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-muted flex items-center justify-center flex-shrink-0 icon-bubble">
+                  <Icon size={14} className="text-primary sm:w-4 sm:h-4" />
                 </div>
-                <div>
-                  <p className="text-[11px] sm:text-xs text-muted-foreground">{label}</p>
+                <div className="min-w-0 flex flex-col gap-0.5">
+                  <p className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground leading-none">{label}</p>
                   {href ? (
                     <a
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs sm:text-sm font-medium text-foreground hover:text-primary transition-colors no-underline"
+                      className="text-xs sm:text-[13px] font-medium text-foreground hover:text-primary transition-colors no-underline truncate"
                     >
                       {value}
                     </a>
                   ) : (
-                    <p className="text-xs sm:text-sm font-medium text-foreground">{value}</p>
+                    <p className="text-xs sm:text-[13px] font-medium text-foreground truncate">{value}</p>
                   )}
                 </div>
               </div>
